@@ -4,7 +4,7 @@ from pyomo.environ import (
     Constraint,
     Param,
     RangeSet,
-    Set,
+    value,
     Var,
 )
 from pyomo.core.expr.relational_expr import EqualityExpression
@@ -21,42 +21,44 @@ def get_abstract_model() -> AbstractModel:
         initialize=3,
     )
 
+    n_value = 3
+
     # Sets: Indexes for parameters, variables and other sets.
     model.rows = RangeSet(
-        0, model.n**2,
+        0, n_value**2 - 1,
         name='rows',
         doc='Set of rows of the Sudoku grid.',
     )
 
-    model.columns = Set(
+    model.columns = RangeSet(
+        0, n_value**2 - 1,
         name='columns',
         doc='Set of columns of the Sudoku grid.',
-        initialize=range(0, pow(model.n.value, 2) - 1),
     )
 
-    model.rows_subgrid = Set(
+    model.rows_subgrid = RangeSet(
+        0, n_value - 1,
         name='rows_subgrid',
         doc='Group of rows taking into account the subgrids.',
-        initialize=range(0, model.n),
     )
 
-    model.columns = Set(
+    model.columns_subgrid = RangeSet(
+        0, n_value - 1,
         name='columns',
         doc='Group of columns taking into account the subgrids.',
-        initialize=range(0, model.n.value - 1),
     )
 
-    model.values = Set(
+    model.grid_values = RangeSet(
+        1, n_value**2,
         name='values',
         doc='Allowed values in each square of the grid.',
-        initialize=range(1, pow(model.n.value, 2))
     )
 
     # Variables: Values defined while solving the problem to get the best solution.
     model.place_value_square = Var(
         model.rows,
         model.columns,
-        model.values,
+        model.grid_values,
         name='place_value_square',
         doc='Binary variable: 1 if value is placed, 0 otherwise.',
         domain=Binary,
@@ -65,7 +67,7 @@ def get_abstract_model() -> AbstractModel:
     # Constraints: Requirements and forbidden actions to achieve a correct solution.
     model.constraint_value_used_once_per_row = Constraint(
         model.rows,
-        model.values,
+        model.grid_values,
         name='value_used_once_per_row',
         doc=constraint_value_used_once_per_row.__doc__,
         rule=constraint_value_used_once_per_row,
@@ -73,16 +75,16 @@ def get_abstract_model() -> AbstractModel:
 
     model.constraint_value_used_once_per_column = Constraint(
         model.columns,
-        model.values,
+        model.grid_values,
         name='value_used_once_per_column',
         doc=constraint_value_used_once_per_column.__doc__,
         rule=constraint_value_used_once_per_column,
     )
 
     model.constraint_values_used_once_per_subgrid = Constraint(
-        model.columns_grid,
-        model.rows_grid,
-        model.values,
+        model.columns_subgrid,
+        model.rows_subgrid,
+        model.grid_values,
         name='values_used_once_per_subgrid',
         doc=constraint_values_used_once_per_subgrid.__doc__,
         rule=constraint_values_used_once_per_subgrid,

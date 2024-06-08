@@ -24,12 +24,23 @@ class Solver:
     def print_solution(self) -> None:
         assert self.solution_exists(), 'The solver did not find any solution!'
 
-        rooks = [
-            f'{column}{row}'
-            for column, row in itertools.product(
-                self.concrete_model.columns, self.concrete_model.rows
-            )
-            if self.concrete_model.place_rook[column, row].value
-        ]
+        n = int(self.concrete_model.n.value)
+        grid_size = int(self.concrete_model.rows.last())
 
-        print(f'Best solution (with {len(rooks)} rooks): {rooks}.')
+        for i in range(1, grid_size + 1):
+            if i % n == 1 and i != 1:
+                print('-' * (4 * grid_size + n + 1))
+
+            for j in range(1, grid_size + 1):
+                if j % n == 1 and j != 1:
+                    print('|', end=' ')
+
+                printed = False
+                for v in range(1, grid_size + 1):
+                    if self.concrete_model.place_value_square[i, j, v].value:
+                        print(v, end=' ')
+                        printed = True
+                        break
+                if not printed:
+                    print(' ', end=' ')
+            print()
