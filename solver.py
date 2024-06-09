@@ -1,4 +1,3 @@
-import itertools
 from typing import Optional
 
 from pyomo.environ import ConcreteModel, SolverFactory, SolverStatus
@@ -25,14 +24,14 @@ class Solver:
         assert self.solution_exists(), 'The solver did not find any solution!'
 
         n = int(self.concrete_model.n.value)
-        grid_size = int(self.concrete_model.rows.last())
+        grid_size = n ** 2
 
-        for i in range(1, grid_size + 1):
-            if i % n == 1 and i != 1:
-                print('-' * (4 * grid_size + n + 1))
+        for i in range(grid_size):
+            if i % n == 0 and i != 0:
+                print('-' * (2 * grid_size + n - 1))
 
-            for j in range(1, grid_size + 1):
-                if j % n == 1 and j != 1:
+            for j in range(grid_size):
+                if j % n == 0 and j != 0:
                     print('|', end=' ')
 
                 printed = False
@@ -44,3 +43,10 @@ class Solver:
                 if not printed:
                     print(' ', end=' ')
             print()
+
+        # Access the values of decision variables
+        for i in self.concrete_model.rows:
+            for j in self.concrete_model.columns:
+                for k in self.concrete_model.grid_values:
+                    if self.concrete_model.place_value_square[i, j, k].value:
+                        print(f"Value {k} placed at row {i}, column {j}")

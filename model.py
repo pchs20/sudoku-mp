@@ -4,7 +4,6 @@ from pyomo.environ import (
     Constraint,
     Param,
     RangeSet,
-    value,
     Var,
 )
 from pyomo.core.expr.relational_expr import EqualityExpression
@@ -44,7 +43,7 @@ def get_abstract_model() -> AbstractModel:
 
     model.columns_subgrid = RangeSet(
         0, n_value - 1,
-        name='columns',
+        name='columns_subgrid',
         doc='Group of columns taking into account the subgrids.',
     )
 
@@ -82,18 +81,26 @@ def get_abstract_model() -> AbstractModel:
     )
 
     model.constraint_values_used_once_per_subgrid = Constraint(
-        model.columns_subgrid,
         model.rows_subgrid,
+        model.columns_subgrid,
         model.grid_values,
         name='values_used_once_per_subgrid',
         doc=constraint_values_used_once_per_subgrid.__doc__,
         rule=constraint_values_used_once_per_subgrid,
     )
 
+    model.constraint_one_value_per_square = Constraint(
+        model.rows,
+        model.columns,
+        name='one_value_per_square',
+        doc=constraint_one_value_per_square.__doc__,
+        rule=constraint_one_value_per_square,
+    )
+
     # Objective: Function of variables that returns a value to be maximized or minimized.
     # There is no function to maximize or minimize, as one solution is no “better” than
     # another. Each solution that fulfills all the constraints is equally valid/optimal.
-    model.objective_function = 0
+    # model.objective_function = 0
 
     return model
 
@@ -139,3 +146,18 @@ def constraint_values_used_once_per_subgrid(
         )
     )
     return values_per_subgrid == 1
+
+
+def constraint_one_value_per_square(
+        model: AbstractModel,
+        row: int,
+        column: int
+) -> EqualityExpression:
+    """Each square must have exactly one value."""
+    values_per_square = (
+            sum(
+                model.place_value_square[row, column, value]
+                for value in model.grid_values
+            )
+    )
+    return values_per_square == 1

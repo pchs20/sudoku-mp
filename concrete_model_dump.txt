@@ -930,7 +930,7 @@
         (8, 8) :   1.0 : place_value_square[8,0,8] + place_value_square[8,1,8] + place_value_square[8,2,8] + place_value_square[8,3,8] + place_value_square[8,4,8] + place_value_square[8,5,8] + place_value_square[8,6,8] + place_value_square[8,7,8] + place_value_square[8,8,8] :   1.0 :   True
         (8, 9) :   1.0 : place_value_square[8,0,9] + place_value_square[8,1,9] + place_value_square[8,2,9] + place_value_square[8,3,9] + place_value_square[8,4,9] + place_value_square[8,5,9] + place_value_square[8,6,9] + place_value_square[8,7,9] + place_value_square[8,8,9] :   1.0 :   True
     constraint_values_used_once_per_subgrid : In a subgrid, each value must be used exactly once.
-        Size=81, Index=columns_subgrid*rows_subgrid*grid_values, Active=True
+        Size=81, Index=rows_subgrid*columns_subgrid*grid_values, Active=True
         Key       : Lower : Body                                                                                                                                                                                                                                                      : Upper : Active
         (0, 0, 1) :   1.0 : place_value_square[0,0,1] + place_value_square[0,1,1] + place_value_square[0,2,1] + place_value_square[1,0,1] + place_value_square[1,1,1] + place_value_square[1,2,1] + place_value_square[2,0,1] + place_value_square[2,1,1] + place_value_square[2,2,1] :   1.0 :   True
         (0, 0, 2) :   1.0 : place_value_square[0,0,2] + place_value_square[0,1,2] + place_value_square[0,2,2] + place_value_square[1,0,2] + place_value_square[1,1,2] + place_value_square[1,2,2] + place_value_square[2,0,2] + place_value_square[2,1,2] + place_value_square[2,2,2] :   1.0 :   True
