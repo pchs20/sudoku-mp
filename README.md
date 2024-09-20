@@ -1,12 +1,11 @@
-# Rooks problem
+# Sudoku
 
-The rooks problem in chess involves determining the number of ways to place N rooks on an 
-N x N chessboard such that no two rooks threaten each other. This means each rook must be 
-placed in a unique row and a unique column.
+This repository implements a Sudoku solver using Pyomo, a Python-based optimization 
+library. The model is built using an abstract formulation where the grid size is flexible 
+(default 9x9). The model defines all the necessary sets, parameters, variables,
+constraints and the objective function to solve this problem.
 
-This project solves this problem using a 8 x 8 chessboard. To do so, a solver called
-SCIP, one of the most powerful non-commercial solvers, is used. The Pyomo library is
-also used to interact with such model.
+Find [here](modeling.pdf) the model expressed mathematically.
 
 ## Installation
 
